@@ -61,6 +61,7 @@ namespace EBazaar.UnitTest.FinansijskiModul
         [TestMethod]
         public void CreateAccount_ValidTest()
         {
+            Assert.IsTrue(Client.ListAccounts.Count == 0);
             FinanceManager.CreateAccount("12321321312", false, Bank, Client);
             Assert.IsTrue(Client.ListAccounts.Count == 1);
         }
@@ -185,6 +186,18 @@ namespace EBazaar.UnitTest.FinansijskiModul
             Assert.AreEqual(0, Balance);
         }
 
+        [DataRow(15)]
+        [DataRow(5555)]
+        [DataRow(750000)]
+        [DataTestMethod]
+        public void CheckBalance_InvalidTest(Int32 BalanceToNotExpect)
+        {
+            ClientList.ListClients.Add(Client);
+            Client.ListAccounts.Add(Account);
+            var Balance = FinanceManager.CheckBalance(Account.Id);
+            Assert.AreNotEqual(BalanceToNotExpect, (Int32)Balance);
+        }
+
         [TestMethod]
         [ExpectedException(typeof(ArgumentException))]
         public void CheckBalance_InvalidTestAccountId()
@@ -219,6 +232,7 @@ namespace EBazaar.UnitTest.FinansijskiModul
             BankList.ListBanks.Add(Bank);
             EmailMessageMock.Setup(_ => _.SendEmail(It.IsAny<string>(), It.IsAny<string>(), It.IsAny<string>(), It.IsAny<bool>()));
             FinanceManager.AskCredit(Client.Id, Credit.Id, 50, Amount);
+            EmailMessageMock.Verify(mock => mock.SendEmail(Client.Email, "Kredit odbijen", $"Kredit id {Credit.Id}, nije dostupan u banci {Account.Bank.Name}.", It.IsAny<bool>()), Times.Never);
             EmailMessageMock.Verify(mock => mock.SendEmail(Client.Email, "Kredit odbijen", $"Korisnik {Client.Name}, korisnicki id {Client.Id}, jos uvek nema odobrenje za kredit na bilo kom racunu.", It.IsAny<bool>()), Times.Once);
 
         }

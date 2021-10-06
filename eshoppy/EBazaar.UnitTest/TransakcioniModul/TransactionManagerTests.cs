@@ -111,6 +111,7 @@ namespace EBazaar.UnitTest.TransakcioniModul
         [TestMethod]
         public void TransactionManager_InvalidClientLowBalance()
         {
+            ClientList.ListClients.Clear();
             Client.ListAccounts.Add(Account);
             Organization.ListAccounts.Add(OrganizationAccount);
             ClientList.ListClients.Add(Client);

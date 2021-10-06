@@ -47,6 +47,8 @@ namespace EShoppy.ProdajniModul.Implementacija
             return MinOffer;
         }
 
+
+
         public List<IOffer> GetOffersByProduct(Guid ProductId)
         {
             if (ProductId == null) { throw new ArgumentNullException(); }
